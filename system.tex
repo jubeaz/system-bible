@@ -1,0 +1,44 @@
+\documentclass[10pt,a4paper]{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[colorlinks]{hyperref}
+\usepackage{tabularx,xltabular}
+\usepackage{imakeidx}
+%\usepackage[acronym]{glossaries}
+\usepackage[acronym,nopostdot,toc]{glossaries-extra}
+%\usepackage{glossaries}
+\usepackage{graphicx}
+\usepackage{textcomp,upquote,listings}
+
+\newglossary*{techniques}{Techniques}
+%\newglossary*{components}{Componentsl}
+\makeglossaries
+\loadglsentries{gl-techniques}
+%\loadglsentries{gl-components}
+
+\makeindex
+
+
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
+\title{My System write ups}
+
+\begin{document}
+\lstset{language=Python,upquote=true}
+\maketitle
+\tableofcontents
+\clearpage
+
+\input{linux/part}
+\input{privacy/part}
+
+\part{index}
+
+\printindex
+\glsaddall 
+%\printglossary[type=\acronymtype]
+\printglossary[type=techniques, style=tree]
+%\printglossary[type=components, style=tree]
+
+\end{document}

@@ -1,0 +1,163 @@
+\chapter{Data-at-rest encryption}
+\url{https://wiki.archlinux.org/title/Data-at-rest_encryption#Block_device_encryption}
+\section{Introduction}
+
+\subsection{Stacked filesystem encryption}
+Stacked filesystem encryption solutions are implemented as a layer that stacks
+on top of an existing filesystem, causing all files written to an
+encryption-enabled folder to be encrypted on-the-fly before the underlying
+filesystem writes them to disk, and decrypted whenever the filesystem reads
+them from disk. This way, the files are stored in the host filesystem in
+encrypted form (meaning that their contents, and usually also their file/folder
+names, are replaced by random-looking data of roughly the same length), but
+other than that they still exist in that filesystem as they would without
+encryption, as normal files / symlinks / hardlinks / ldots
+
+The way it is implemented, is that to unlock the folder storing the raw
+encrypted files in the host filesystem ("lower directory"), it is mounted
+(using a special stacked pseudo-filesystem) onto itself or optionally a
+different location ("upper directory"), where the same files then appear in
+readable form - until it is unmounted again, or the system is turned off.
+
+Available solutions in this category are
+\href{https://wiki.archlinux.org/title/ECryptfs}{eCryptfs} and
+\href{https://wiki.archlinux.org/title/EncFS}{EncFS}.
+
+\subsection{Block device encryption}
+
+Block device encryption methods, on the other hand, operate below the
+filesystem layer and make sure that everything written to a certain block
+device (i.e. a whole disk, or a partition, or a file acting as a loop device)
+is encrypted. This means that while the block device is offline, its whole
+content looks like a large blob of random data, with no way of determining what
+kind of filesystem and data it contains. Accessing the data happens, again, by
+mounting the protected container (in this case the block device) to an
+arbitrary location in a special way.
+
+\begin{itemize}
+    \item Loop-AES:  is a descendant of cryptoloop and is a secure and fast
+            solution to system encryption. However, loop-AES is considered less
+            user-friendly than other options as it requires non-standard kernel
+            support.
+
+    \item dm-crypt:  is the standard device-mapper encryption functionality
+        provided by the Linux kernel. It can be used directly by those who like
+        to have full control over all aspects of partition and key management.
+        The management of dm-crypt is done with the \verb+cryptsetup+ userspace
+        utility. It can be used for the following types of block-device
+        encryption: LUKS (default), plain, and has limited features for loopAES
+        and Truecrypt devices: 
+        \begin{itemize}
+            \item LUKS, used by default, is an additional convenience layer
+                which stores all of the needed setup information for dm-crypt
+                on the disk itself and abstracts partition and key management
+                in an attempt to improve ease of use and cryptographic
+                security.i A partition using LUKS consists of two parts: the
+                header and the encrypted data. The header contains keys without
+                which it is practically impossible to recover the data.
+            \item plain dm-crypt mode, being the original kernel functionality,
+                does not employ the convenience layer. It is more difficult to
+                apply the same cryptographic strength with it. When doing so,
+                longer keys (passphrases or keyfiles) are the result. It has,
+                however, other advantage. 
+        \end{itemize}
+    \item  TrueCrypt/VeraCrypt: A portable format, supporting encryption of
+        whole disks/partitions or file containers, with compatibility across
+        all major operating systems.
+\end{itemize}
+
+
+\section{dm-crypt}
+
+\subsection{Encrypting a non-root file system}
+To encrypt a device that is not used for booting a system, like a partition or a file container.
+
+Encrypting a secondary filesystem usually protects only sensitive data, while
+leaving the operating system and program files unencrypted. This is useful for
+encrypting an external medium, such as a USB drive, so that it can be moved to
+different computers securely. One might also choose to encrypt sets of data
+separately according to who has access to it.
+
+\subsubsection{Drive preparation}
+
+Before encrypting a drive, it is recommended to perform a secure erase of the
+disk by overwriting the entire drive with random data. To prevent cryptographic
+attacks or unwanted file recovery, this data is ideally indistinguishable from
+data later written by dm-crypt.
+
+dm-crypt wipe on an empty disk or partition:
+\begin{verbatim}
+# create a temporary encrypted container on 
+# the partition (sdXY) or complete device (sdX)
+cryptsetup open --type plain -d /dev/urandom /dev/<block-device> to_be_wiped
+# verify that it exists
+lsblk
+# Wipe the container with zero
+dd if=/dev/zero of=/dev/mapper/to_be_wiped status=progress
+# close the temporary container
+cryptsetup close to_be_wiped
+\end{verbatim}
+
+\subsubsection{Parititonning}
+
+Create the partition which will contain the encrypted container then:
+\begin{verbatim}
+#  setup the LUKS header with: 
+# cryptsetup options luksFormat device
+sudo /usr/bin/cryptsetup -y -v luksFormat /dev/sdc1
+
+# gain access to the encrypted partition
+# cryptsetup open <device> <name>
+sudo /usr/bin/cryptsetup luksOpen /dev/sdc1 mykey
+
+# create a file system 
+# mkfs.fstype /dev/mapper/name
+sudo mkfs.ext4 /dev/mapper/mykey
+\end{verbatim}
+
+\subsubsection{Manual mounting and unmounting}
+\begin{verbatim}
+cryptsetup open <device> <name>
+mount -t fstype /dev/mapper/<name> <mount_point>
+
+sudo /usr/bin/cryptsetup luksOpen /dev/sdc1 mykey
+sudo mount -t ext4 /dev/mapper/mykey /tmp
+\end{verbatim}
+
+\begin{verbatim}
+sudo umount /tmp
+sudo cryptsetup close mykey
+\end{verbatim}
+
+\subsubsection{Automated unlocking and mounting}
+iThere are three different solutions for automating the process of unlocking
+the partition and mounting its filesystem.
+
+{\bf At boot time} : Using the \verb+/etc/crypttab+ configuration file,
+unlocking happens at boot time by systemd's automatic parsing. This is the
+recommended solution to use one common partition for all user's automatically
+mount another encrypted block device.
+
+{\bf On user login} Using \verb+pam-exec+ (recommended to have a single user's
+home directory on a partition) or using \verb+pam_mount+.
+
+\subsubsection{Passphrase rotation}
+Passphrase can be changed within one step with the \verb+luksChangeKey+. But in
+order to prevent typo it can be done in two steps:
+
+First add a new passphrase to the volume.
+\begin{verbatim}
+cryptsetup luksAddKey /dev/<device>
+\end{verbatim}
+
+Then remove previous passphrase.
+\begin{verbatim}
+cryptsetup luksRemoveKey /dev/<device>
+\end{verbatim}
+
+
+\subsection{Encrypting an entire system}
+To encrypt an entire system, in particular a root partition. Several scenarios
+are covered, including the use of dm-crypt with the LUKS extension, plain mode
+encryption and encryption and LVM.
+

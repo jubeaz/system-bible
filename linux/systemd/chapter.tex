@@ -1,0 +1,113 @@
+\chapter{systemctl}
+
+
+
+\section{systemctl}
+
+\section{timers}
+\subsection{Introduction}
+Timers are systemd unit files whose name ends in \verb+.timer+ that control
+\verb+.service+ files or events. Timers can be used as an alternative to cron.
+Timers have built-in support for calendar time events, monotonic time events,
+and can be run asynchronously. 
+
+Timers are defined as one of two types:
+\begin{itemize}
+    \item Realtime timers (a.k.a. wallclock timers) activate on a calendar
+        event, the same way that cronjobs do. The option \verb+OnCalendar=+ is used to define them.
+    \item Monotonic timers activate after a time span relative to a varying
+        starting point. They stop if the computer is temporarily suspended or
+        shut down. There are number of different monotonic timers but all have
+        the form: \verb+OnTypeSec=+. Common monotonic timers include
+        \verb+OnBootSec+ and \verb+OnUnitActiveSec+.
+\end{itemize}
+
+For each \verb+.timer+ file, a matching \verb+.service+ file exists. The
+\verb+.timer+ file activates and controls the \verb+.service+ file. The
+\verb+.service+ does not require an \verb+[Install]+ section as it is the timer
+units that are enabled. If necessary, it is possible to control a
+differently-named unit using the \verb+Unit=+ option in the timer's
+\verb+[Timer]+ section. 
+
+\subsection{Management}
+
+To use a timer unit \verb+enable+ and \verb+start+ it like any other unit
+(remember to add the \verb+.timer+ suffix). 
+
+To list timers use \verb+systemctl list-timers --all+
+
+If a timer gets out of sync, it may help to delete its \verb+stamp-*+ file in
+\verb+/var/lib/systemd/timers+ (or \verb+~/.local/share/systemd/+ in case of
+user timers). These are zero length files which mark the last time each timer
+was run. If deleted, they will be reconstructed on the next start of their
+timer.
+
+\verb+systemctl status TIMER_NAME+
+
+
+\subsection{Example}
+
+\subsubsection{Monotonic timer}
+
+A timer which will start 15 minutes after boot and again every week while the
+system is running.
+\verb+/etc/systemd/system/foo.timer+:
+\begin{verbatim}
+[Unit]
+Description=Run foo weekly and on boot
+
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=1w
+
+[Install]
+WantedBy=timers.target
+\end{verbatim}
+
+\subsubsection{Realtime timer}
+
+A timer which starts once a week (at 12:00am on Monday). When activated, it
+triggers the service immediately if it missed the last start time (option
+Persistent=true), for example due to the system being powered off.
+
+\verb+/etc/systemd/system/foo.timer+
+
+\begin{verbatim}
+[Unit]
+Description=Run foo weekly
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+\end{verbatim}
+
+
+When more specific dates and times are required, OnCalendar events uses the
+following format:
+
+\begin{verbatim}
+# DayOfWeek Year-Month-Day Hour:Minute:Second
+\end{verbatim}
+An \verb+*+ may be used to specify any value and \verb+,+ may be used to list
+possible values. Two values separated by \verb+..+ indicate a contiguous range. 
+
+\begin{verbatim}
+# DayOfWeek Year-Month-Day Hour:Minute:Second
+
+# run the first four days of each month at 12:00 PM,only if that day is a Monday or a Tuesday.
+OnCalendar=Mon,Tue *-*-01..04 12:00:00
+
+# run every day at 4am
+OnCalendar=*-*-* 4:00:00
+\end{verbatim}
+
+
+\subsection{journalctl}
+output \verb+-o+ after chose between short-full, verbose, json or cat
+
+periode of time
+\verb+-S+ (since) or \verb+-U+ (until)
+journalctl -S "2020-91-12 07:00:00"

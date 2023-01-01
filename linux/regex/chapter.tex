@@ -1,0 +1,184 @@
+\chapter{Regular expressions}
+grep understands three different versions of regular expression syntax: basic
+(BRE), extended (ERE), and Perl-compatible (PCRE)
+
+Perl-compatible regular expressions give additional functionality, and are
+documented in the pcre2syntax(3) and pcre2pattern(3) manual pages, but work
+only if PCRE is available in the system. 
+
+\section{Extended Regular Expression}
+
+\subsection{Fundamental Structure}
+
+In regular expressions, the characters \verb-.?*+{|()[\^$- are special
+characters and have uses described below. All other characters are
+ordinary characters, and each ordinary character is a regular
+expression that matches itself.
+
+The period \verb+.+ matches any single character. It is unspecified whether
+\verb+.+ matches an encoding error.
+
+A regular expression may be followed by one of several {\bf repetition} operators;
+the operators beginning with \verb+{+ are called interval expressions.
+
+\begin{itemize}
+    \item \verb+?+ The preceding item is optional and is matched at most once.
+    \item \verb+*+ The preceding item is matched zero or more times.
+    \item \verb-+- The preceding item is matched one or more times.
+    \item \verb+{n}+ The preceding item is matched exactly n times.
+    \item \verb+{n,}+ The preceding item is matched n or more times.
+    \item \verb+{,m}+ The preceding item is matched at most m times. This is a GNU extension.
+    \item \verb+{n,m}+ The preceding item is matched at least n times, but not more than m times.
+\end{itemize}
+
+The empty regular expression matches the empty string. i
+
+Two regular expressions may be {\bf concatenated}; the resulting regular expression
+matches any string formed by concatenating two substrings that respectively
+match the concatenated expressions.
+
+Two regular expressions may be joined by the infix operator \verb+|+. The
+resulting regular expression matches any string matching either of the two
+expressions, which are called{\bf  alternatives}.
+
+Repetition takes precedence over concatenation, which in turn takes precedence
+over alternation. 
+
+A whole expression may be enclosed in parentheses
+\verb+()+ to override these precedence rules and form a subexpression. An
+unmatched \verb+)+ matches just itself. 
+
+\subsection{Character Classes and Bracket Expressions}
+
+A bracket expression is a list of characters enclosed by \verb+[+ and
+\verb+]+. It matches any single character in that list. 
+
+If the first character of the list is the caret \verb+^+, then it matches any
+character {\bf not} in the list, and it is unspecified whether it matches an encoding error. 
+
+Within a bracket expression, a {\bf range expression} consists of two
+characters separated by a \verb+-+. It matches any single character that sorts
+between the two characters, inclusive.
+
+
+Finally, certain {\bf named classes of characters} are predefined within bracket
+expressions, as follows. Their interpretation depends on the \verb+LC_CTYPE+ locale;
+for example, \verb+[:alnum:]+ means the character class of numbers and letters in
+the current locale. 
+
+\subsection{Special Backslash Expressions}
+
+The \verb+\+ character followed by a special character is a regular expression
+that matches the special character. The \verb+\+ character, when followed by
+certain ordinary characters, takes a special meaning:
+
+\begin{itemize}
+\item \verb+\b+ Match the empty string at the edge of a word.
+\item \verb+\B+ Match the empty string provided it’s not at the edge of a word.
+\item \verb+\<+ Match the empty string at the beginning of a word.
+\item \verb+\>+ Match the empty string at the end of a word.
+\item \verb+\w+ Match word constituent, it is a synonym for \verb+[:alnum:]+
+\item \verb+\W+ Match non-word constituent, it is a synonym for \verb+^[:alnum:]+.
+\item \verb+\s+ Match whitespace, it is a synonym for \verb+[:space:]+.
+\item \verb+\S+ Match non-whitespace, it is a synonym for \verb+^[:space:]+.
+\item \verb+\]+ Match \verb+]+.
+\item \verb+\}+ Match \verb+}+.
+\end{itemize}
+
+The behavior of grep is unspecified if a unescaped backslash is not followed by
+a special character, a nonzero digit, or a character in the above list.
+Although grep might issue a diagnostic and/or give the backslash an
+interpretation now, its behavior may change if the syntax of regular
+expressions is extended in future versions. 
+
+\subsection{Anchoring}
+
+The caret \verb+^+ and the dollar sign \verb+$+ are special characters that
+respectively match the empty string at the beginning and end of a line. They
+are termed anchors, since they force the match to be “anchored” to beginning or
+end of a line, respectively. 
+
+\subsection{Back-references and Subexpressions}
+
+The back-reference \verb+\n+, where \verb+n+ is a single nonzero digit, matches
+the substring previously matched by the \verb+n+th parenthesized subexpression
+of the regular expression. For example, \verb+(a)\1+ matches \verb+aa+. If the
+parenthesized subexpression does not participate in the match, the
+back-reference makes the whole match fail; for example, \verb+(a)*\1+ fails to
+match \verb+a+. If the parenthesized subexpression matches more than one
+substring, the back-reference refers to the last matched substring; for
+example, \verb+^(ab*)*\1$+ matches \verb+ababbabb+ but not \verb+ababbab+. When
+multiple regular expressions are given with \verb+-e+ or from a file 
+(\verb+-f file+), back-references are local to each expression. 
+
+
+\section{Basic vs Extended Regular Expressions}
+
+Basic regular expressions differ from extended regular expressions in the following ways:
+\begin{itemize}
+    \item The characters \verb+?+, \verb-+-, \verb+{+, \verb+|+, \verb+(+, and
+            \verb+)+ lose their special meaning; instead use the backslashed
+            versions \verb+\?+, \verb-\+-, \verb+\{+, \verb+\|+, \verb+\(+, and
+            \verb+\)+. Also, a backslash is needed before an interval
+        expression’s closing \verb+}+.
+    \item An unmatched \verb+\)+ is invalid.
+    \item If an unescaped \verb+^+ appears neither first, nor directly after
+        \verb+\(+ or \verb+\|+, it is treated like an ordinary character and is
+            not an anchor.
+    \item If an unescaped \verb+$+ appears neither last, nor directly before
+    \verb+\|+ or \verb+\)+, it is treated like an ordinary character and is not
+    an anchor.
+    \item If an unescaped \verb+*+ appears first, or appears directly after
+        \verb+\(+ or \verb+\|+ or anchoring \verb+^+, it is treated like an
+            ordinary character and is not a repetition operator. 
+\end{itemize}
+
+\begin{verbatim}
+Après avoir introduit le vocabulaire des regex, voici quelques éléments de syntaxe des métacaractères :
+ˆ Début de chaîne de caractères ou de ligne.
+$ Fin de chaîne de caractères ou de ligne.
+Exemple : la regex ATG$ est retrouvée dans la chaîne de caractères TGCATG mais pas dans la chaîne CCATGTT.
+. N’importe quel caractère (mais un caractère quand même).
+[ABC] Le caractère A ou B ou C (un seul caractère).
+[A-Z] N’importe quelle lettre majuscule.
+[a-z] N’importe quelle lettre minuscule.
+[0-9] N’importe quel chiffre.
+[A-Za-z0-9] N’importe quel caractère alphanumérique.
+[ˆAB] N’importe quel caractère sauf A et B.
+\ Caractère d’échappement (pour protéger certains caractères).
+* 0 à n fois le caractère précédent ou l’expression entre parenthèses précédente.
++ 1 à n fois le caractère précédent ou l’expression entre parenthèses précédente.
+? 0 à 1 fois le caractère précédent ou l’expression entre parenthèses précédente.
+{n} n fois le caractère précédent ou l’expression entre parenthèses précédente.
+{n,m} n à m fois le caractère précédent ou l’expression entre parenthèses précédente.
+{n,} Au moins n fois le caractère précédent ou l’expression entre parenthèses précédente.
+{,m} Au plus m fois le caractère précédent ou l’expression entre parenthèses précédente.
+(CG|TT) Les chaînes de caractères CG ou TT.
+Enfin, il existe des caractères spéciaux qui sont bien commodes et qui peuvent être utilisés en tant que métacaractères :
+\d remplace n’importe quel chiffre (d signifie digit), équivalent à [0-9].
+\w remplace n’importe quel caractère alphanumérique et le caractère souligné (underscore) (w signifie word character),
+équivalent à [0-9A-Za-z_].
+\s remplace n’importe quel « espace blanc » (whitespace) (s signifie space), équivalent à [ \t\n\r\f]. La notion
+d’espace blanc a été abordée dans le chapitre 10 Plus sur les chaînes de caractères. Les espaces blancs les plus
+classiques sont l’espace , la tabulation \t, le retour à la ligne \n, mais il en existe d’autres comme \r et \f que nous
+ne développerons pas ici. \s est très pratique pour détecter une combinaison d’espace(s) et/ou de tabulation(s).
+Comme vous le constatez, les métacaractères sont nombreux et leur signification est parfois difficile à maîtriser. Faites
+particulièrement attention aux métacaractères ., + et * qui, combinés ensemble, peuvent donner des résultats ambigus.
+Il est important de savoir par ailleurs que les regex sont « avides » (greedy en anglais) lorsqu’on utilise les métacaractères
++ et *. C’est-à-dire que la regex cherchera à « s’étendre » au maximum. Par exemple, si on utilise la regex A+ pour faire une
+recherche dans la chaîne TTTAAAAAAAAGC, tous les A de cette chaîne (8 en tout) seront concernés, bien que AA, AAA, etc. «
+fonctionnent » également avec cette regex
+\end{verbatim}
+\begin{verbatim}
+2. https://regexone.com/
+3. https://regexr.com/
+4. https://extendsclass.com/regex-tester.html#python
+5. https://pythex.org/
+6. https://www.regular-expressions.info
+\end{verbatim}
+
+
+
+
+\subsubsection{grep}
+

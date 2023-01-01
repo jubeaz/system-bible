@@ -1,0 +1,744 @@
+\chapter{PGP}
+
+\section{GnuPG}
+\subsection{Introduction}
+GnuPG is a tool for secure communication. It uses public-key cryptography so
+that users may communicate securely. GnuPG uses a somewhat more sophisticated
+scheme in which a user has a primary keypair and then zero or more additional
+subordinate keypairs. The primary and subordinate keypairs are bundled to
+facilitate key management and the bundle can often be considered simply as one
+keypair.
+
+\subsubsection{Keypair}
+A keypair has a public key and a private key. 
+
+A public key consists of: 
+\begin{itemize}
+        \item the public portion of the master signing key, 
+        \item the public portions of the subordinate signing and encryption
+            subkeys,
+        \item and a set of user IDs used to associate the public key with a real person. 
+\end{itemize}
+
+Each piece has data about itself:
+\begin{itemize}
+    \item For a key, this data includes its ID, when it was created, when it will expire, etc. 
+    \item For a user ID, this data includes the name of the real person it identifies, an optional comment, and an email address. 
+\end{itemize}
+
+The structure of the private key is similar, except that it contains only the
+private portions of the keys, and there is no user ID information.
+
+
+The notion of a \verb+key+ in GnuPG documentation actually consists of one or many of the above-mentioned keypairs.  Instead, a “key” consists of multiple “key-pairs”. 
+
+A possible motivation for this kind of design is to facilitate using one
+key-pair for signing and a different one for encryption, despite there being
+only one identified person using the GPG key. This is the default setup GnuPG
+uses when generating a GPG key via \verb+gpg --gen-key+.
+
+\subsubsection{Subkey}
+The mechanism by which the multiple keypairs within the same GPG key relates to
+each other is the notion of a \verb+subkey+. In each GPG key, there is a
+keypair given special status, called the \verb+master key+ 
+(or \verb+primary key+). The master key certifies that the other keypairs in
+the GPG key belong to the same owner via the usual means of certification: a
+signature. The other keypairs are then referred to as \verb+subkeys+ (or
+    \verb+secondary keys+ of that GPG key. 
+
+The passphrase GnuPG obtains from you when you generate a key is scoped to the
+entire GPG key, instead of individual keypairs within it. Adding, revoking, or
+using subkeys will not change the passphrase.
+
+Additional subkeys are also useful. The user IDs associated with your public
+master key are validated by the people with whom you communicate, and changing
+the master key therefore requires recertification. This may be difficult and
+time consuming if you communicate with many people. On the other hand, it is
+good to periodically change encryption subkeys. If a key is broken, all the
+data encrypted with that key will be vulnerable. By changing keys, however,
+only the data encrypted with the one broken key will be revealed.
+
+\subsubsection{keyrings}
+There’s \verb+~/.gnupg/+, which is a directory containing files used or managed by the
+gpg program, and some config files. 
+
+In v1.x, there’s ai:
+\begin{itemize}
+    \item “public keyring” that, for each GPG key you work with (be it your own
+        or your friend’s), stores the public-halves of the keypairs of that GPG
+        key. 
+    \item  “private-half” of each of your GPG keys is stored in what’s called
+        the “private keyring”.
+\end{itemize}
+
+In v2.x, information previously stored in the private keyring is now stored as
+individual files in a separate directory, one file per GPG key. Hence the
+notion of a “private keyring” no longer exists, and that the public keyring can
+simply be referred to as “the keyring”. As an aside, GnuPG seems to
+automatically generate revocation certificates when you generate GPG keys,
+which it then stores into a directory for revocation certificates, using one
+file per GPG key you generate.
+
+\subsection{Key listing}
+
+In \verb+gpg --list-keys+ or \verb+gpg --list-secret-keys+:
+\begin{itemize}
+        \item \verb+pub+: public key; the public-half of a master key
+        \item \verb+sub+: public subkey; the public-half of a subkey
+        \item \verb+sec+: secrete key; the private-half of a master key
+        \item \verb+ssb+: secrete subkey; the private-half of a subkey
+        \item \verb+uid+: a user identifier entry. Each GPG key can have
+            multiple of these.
+        \item \verb+SC+, \verb+E+, \ldots: intended usages of the keypair.
+            \verb+S+ for signing; \verb+E+ for encryption; \verb+C +for
+            certification (something GnuPG designates the master key to do).
+\end{itemize}
+
+\subsubsection{Identifying GPG keys}
+The “fingerprint of a GPG key” is the fingerprint of the master key in that GPG
+key.
+
+\begin{verbatim}
+gpg --list-keys/list-secret-keys --fingerprint
+\end{verbatim}
+A fingerprint is a string of 40 hexidecimal digits, and the longest identifier
+of a GPG key in practical use, short of repeating the key itself. There are
+notions of a “keyid”, which is really just a suffix of the fingerprint.
+\begin{verbatim}
+92DC742D9CC89534B75C2746FF99048E395DC7E7    # fingerprint
+                        FF99048E395DC7E7    # "long" keyid; 16 hex digits
+                      0xFF99048E395DC7E7    # "0xlong" keyid
+                                395DC7E7    # "short" keyid; 8 hex digits
+                              0x395DC7E7    # "0xshort" keyid
+\end{verbatim}
+Usually the fingerprint of only the master key is shown; if you want gpg to
+show the fingerprint of subkeys as well, you’d need to pass
+\verb+--fingerprint+ twice.
+
+When GnuPG generated the revocation certificates for you inside
+\verb+~/.gnupg/openpgp-revocs.d/+, the filename of each certificate uses the
+fingerprint of the GPG key which the certificate can revoke.
+
+\subsection{Operating on GPG keys}
+
+When we have a GPG key at hand, apart from using it as a crytographic key, what
+can we do with it? As part of managing GPG keys, the operations we can do whose
+effect is contained within our local computer includes:
+\begin{itemize}
+  \item Export the public half of a GPG key to a file. \verb+--export+ 
+  \item Export the private half of a GPG key to a file.
+      \verb+--export-secret-keys+.
+  \item Import an exported public  or private half of a GPG key \verb+--import+.
+  \item “Sign” a GPG key. This means to use the master key of your GPG key to
+      sign a certificate which will become part of the information that
+      constitutes the GPG key that is signed. This is the “certification” (C)
+      usage of a key-pair of a GPG key. The certification means that you vouch,
+      using the reputation of your identity and GPG key, that the signed GPG
+      key indeed belongs to the person whom that key’s user id refers to. It
+      only make sense to sign other people’s keys, not one’s own.
+      \verb+--sign-key+.
+  \item “Edit” a GPG key. This includes adding or revoking subkeys, adding user
+      ids, changing the passphrase that protects the GPG key etc.
+      \verb+--edit+ does any number of those, interactively in the terminal.
+      (\verb+adduid+, \verb+deluid+, \verb+addkey+, \verb+delkey+) 
+  \item Revoke a GPG key. This marks a GPG key as compromised. 
+  \item Delete the public-half of a GPG key: \verb+--delete-key+
+  \item Delete the private-half of a GPG key: \verb+--delete-secret-key+
+\end{itemize}
+
+The operations that involve network communication between your local computer
+and a keyserver includes to:
+
+\begin{itemize}
+        \item Send the public-half of a GPG key to a keyserver:
+            \verb+--send-keys $fingerprint+
+        \item Retrieve the public-half of a GPG key from a keyserver:
+            \verb+--search-keys $query+, where query is something among the name, the email, or the fingerprint of the key you’re interested in. GnuPG will interactively ask you for confirmation. 
+        \item Push your changes to a GPG key to a keyserver: after editing your
+            key via \verb+--edit+, revoking your key via \verb+--import+, or
+            signing a friend’s key via \verb+--sign+, you can push the changes
+            to the world by the same procedure you first published your GPG
+            key: \verb+--send-keys $optionally_fingerprint+
+        \item Pull changes from a keyserver regarding a GPG key: the key that
+            has changed while you weren’t looking may unsurprisingly be someone
+            else’s key or, somewhat surprisingly, your own key. People might
+            have edited or revoked their key, yet they might have also added a
+            signature to your key. \verb+--refresh-keys+ pulls the changes.
+\end{itemize}
+
+\subsection{Revocation}
+\subsubsection{Revoking a key}
+Revoking a key involves two steps:
+\begin{itemize}
+    \item \verb+--import+ the revocation certificate to mark your key as
+        revoked on your local computer.
+    \item \verb+--send-keys+ to the keyserver, as if you have edited your key.
+\end{itemize}
+
+There’s no “deleting” a key from a keyserver. 
+
+When you mark your key as revoked, a special revocation entry is added to the
+information contained within your key, alongside the other entries like user
+id, uesr id certifications, subkeys, subkey certifications. When your friends
+see the revocation entry, they will un-trust the entire key.
+
+The effects of the revocation can only be seen by your friends after the update
+ to you key has propagated throughout the keyserver network, and that your
+ friends have subsequencely run \verb+--refresh-keys+ to pull changes you have
+ made to you key.
+
+If you revoke a key, all information in that key is marked as compromised,
+including your friends’ signature of your user id. As such, you effectively
+lose all reputation built on your GPG key.
+
+\subsubsection{Revoking a subkey}
+Revoking a subkey involves also two steps:
+\begin{itemize}
+    \item \verb+--edit+ the GPG key in which the subkey to revoke resides, and
+        follow instructions to interactively revoke a subkey via \verb+revkey+.
+    \item \verb+--send-keys+ to the keyserves, as you have “edited” your key.
+\end{itemize}
+
+When a subkey is revoked, a certificate signed by the master key of the GPG key
+that states the subkey’s revocation is added to the set of information
+contained within the GPG key in which it resided.
+
+Similar to revoking a GPG key, your friends also have to receive your changes
+via i\verb+--refresh-keys+ before they know you wanted to revoke a subkey.
+Documents signed by the revoked subkey can still be identified as being
+associated with its GPG key, but GnuPG will state that the subkey has already
+been revoked.
+
+Since nothing happened to your master key nor your user id certifications when
+revoking a subkey, nothing changed about your reputation. This is a way of
+managing keys so that you may decrease the impact of the compromise of your
+\verb+~/.gnupg+ directory by storing the private-half of your master key
+elsewhere than your day-to-day system. Debian seems to promote this practice in
+its article about \href{https://wiki.debian.org/Subkeys}{subkeys}.
+
+\subsection{Key integrity}
+
+When you distribute your public key, you are distributing the public components
+of your master and subordinate keys as well as the user IDs. Distributing this
+material alone, however, is a security risk since it is possible for an
+attacker to tamper with the key.
+
+Using digital signatures is a solution to this problem. When data is signed by
+a private key, the corresponding public key is bound to the signed data. In
+other words, only the corresponding public key can be used to verify the
+signature and ensure that the data has not been modified. A public key can be
+protected from tampering by using its corresponding private master key to sign
+the public key components and user IDs, thus binding the components to the
+public master key. Signing public key components with the corresponding private
+master signing key is called self-signing, and a public key that has
+self-signed user IDs bound to it is called a certificate.
+
+The signatures on the user IDs can be checked with the command check from the
+key edit menu.
+\begin{verbatim}
+chloe% gpg --edit-key UID
+Command> check
+\end{verbatim}]
+
+\subsection{Validating other keys on your public keyring}
+ procedure was given to validate your correspondents' public keys: a
+ correspondent's key is validated by personally checking his key's fingerprint
+ and then signing his public key with your private key. By personally checking
+ the fingerprint you can be sure that the key really does belong to him, and
+ since you have signed they key, you can be sure to detect any tampering with
+ it in the future. Unfortunately, this procedure is awkward when either you
+ must validate a large number of keys or communicate with people whom you do
+ not know personally.
+
+ GnuPG addresses this problem with a mechanism popularly known as the web of
+ trust. In the web of trust model, responsibility for validating public keys is
+ delegated to people you trust. 
+
+
+In practice trust is subjective.  The web of trust model accounts for this by associating with each public key on your keyring an indication of how much you trust the key's owner. There are four trust levels.
+\begin{itemize}
+    \item unknownn:  Nothing is known about the owner's judgment in key
+        signing. Keys on your public keyring that you do not own initially have
+        this trust level.
+    \item none:   The owner is known to improperly sign other keys.
+    \item marginal:  The owner understands the implications of key signing and
+        properly validates keys before signing them.
+    \item full: The owner has an excellent understanding of key signing, and his signature on a key would be as good as your own.
+\end{itemize}
+
+The GnuPG key editor may be used to adjust your trust in a key's owner. The
+command is \verb+trust+. 
+\begin{verbatim}
+$ gpg --edit-key UID
+$ trust
+\end{verbatim}
+
+\subsection{Best practice}
+\begin{itemize}
+    \item Use the sks keyserver pool, instead of one specific server, with
+        secure connections.
+    \item Use an expiration date less than two years.
+    \item Only use your primary key for certification (and possibly signing).
+        Have a separate subkey for encryption.
+    \item Have a separate subkey for signing
+    \item Keep your primary key entirely offline
+\end{itemize}
+
+\subsection{Using Keys}
+
+\begin{verbatim}
+ --armor is an output modifier: you use it in addition to other arguments which specify the operation you want gpg to perform, and it changes the output to be an ASCII-armored file instead of a binary file. Thus
+bbbbbbbb
+
+will sign myfile and output the signed file in myfile.asc, but none of the contents of myfile will be immediately visible in myfile.asc. (gpg compresses the contents by default, among other transformations.)
+
+--clearsign is a complete operation: gpg signs the given file, and wraps the signature around the content without modifying it. Thus
+
+gpg --clearsign myfile
+
+will sign myfile and output the signed file in myfile.asc, in such a way that the original contents of myfile will be immediately visible in myfile.asc.
+
+Clear-signing is ideal for signing emails or other text documents which should remain readable as-is, without involving gpg. Recipients can optionally verify the signature using gpg, but they don’t have to use gpg to read the contents.
+
+You can approximate the result of --clearsign using --armor by producing a detached signature (gpg --armor --detach-sign myfile): if gpg doesn’t need to alter the signed content, then the detached signature will be identical to the signature block at the end of a clear-signed file. You’d need to add the appropriate header:
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+\end{verbatim}
+
+\subsubsection{Encrypting documents}
+
+\begin{verbatim}
+
+$ gpg --output doc.gpg --encrypt --recipient blake@cyb.org doc
+
+$ echo "test message string" |
+    gpg --encrypt --armor --recipient $KEYID -o encrypted.txt
+
+$ $ echo "test message string" |
+    gpg --encrypt --armor \
+        --recipient $KEYID_0\
+        --recipient $KEYID_1\
+        --recipient $KEYID_2\
+        -o encrypted.txt
+\end{verbatim}
+
+Use a shell function to make encrypting files easier:
+\begin{verbatim}
+secret () {
+        output=~/"${1}".$(date +%s).enc
+        gpg --encrypt --armor --output ${output} -r 0x0000 -r 0x0001 -r 0x0002 "${1}" && echo "${1} -> ${output}"
+}
+
+reveal () {
+        output=$(echo "${1}" | rev | cut -c16- | rev)
+        gpg --decrypt --output ${output} "${1}" && echo "${1} -> ${output}"
+}
+\end{verbatim}
+
+
+\begin{verbatim}
+$ secret document.pdf
+document.pdf -> document.pdf.1580000000.enc
+
+$ reveal document.pdf.1580000000.enc
+gpg: anonymous recipient; trying secret key 0xFF3E7D88647EBCDB ...
+gpg: okay, we are the anonymous recipient.
+gpg: encrypted with RSA key, ID 0x0000000000000000
+document.pdf.1580000000.enc -> document.pdf
+\end{verbatim}
+
+
+\subsubsection{decrypting documents}
+\begin{verbatim}
+$ gpg --decrypt --armor encrypted.txt
+gpg: anonymous recipient; trying secret key 0x0000000000000000 ...
+gpg: okay, we are the anonymous recipient.
+gpg: encrypted with RSA key, ID 0x0000000000000000
+test message string
+
+$ gpg --output doc --decrypt doc.gpg
+
+You need a passphrase to unlock the secret key for
+user: "Blake (Executioner) <blake@cyb.org>"
+1024-bit ELG-E key, ID 5C8CBD41, created 1999-06-04 (main key ID 9E98BC16)
+
+Enter passphrase:
+\end{verbatim}
+
+\subsubsection{Signing  documents}
+\begin{verbatim}
+$ gpg --output doc.sig --sign doc
+$ echo "test message string" | gpg --armor --clearsign > signed.txt
+\end{verbatim}
+
+\subsubsection{verifying signed documents}
+\begin{verbatim}
+$ gpg --verify signed.txt
+gpg: Signature made Wed 25 May 2016 00:00:00 AM UTC
+gpg:                using RSA key 0xBECFA3C1AE191D15
+gpg: Good signature from "Dr Duh <doc@duh.to>" [ultimate]
+Primary key fingerprint: 011C E16B D45B 27A5 5BA8  776D FF3E 7D88 647E BCDB
+     Subkey fingerprint: 07AA 7735 E502 C5EB E09E  B8B0 BECF A3C1 AE19 1D15
+\end{verbatim}
+
+\subsection{Master key Generation}
+
+\url{https://chipsenkbeil.com/posts/applying-gpg-and-yubikey-part-2-setup-primary-gpg-key/}
+On a new fresh computer 
+Generate a master keypair and subkeypair (one to sign one to encrypt)
+export master keypair + revocation certificate (binary and armored) on a luks
+usb key and archive
+
+export subkey on a usb to reimport on the desired machine.
+
+\begin{verbatim}
+$ gpg --expert --full-generate-key
+# select RSA (set your own capabilities)
+# Certify is a unique capability to your master key that enables it to approve (sign?) other keys that you want to trust. 
+# so do not select any capability
+# select 4096 size
+# key does not expire
+# assign and identity
+addkey 
+# RSA (encrypt only)
+# 2y
+addkey 
+# RSA (sign only)
+# 2y
+save
+\end{verbatim}
+
+Edit the master key to assign it ultimate trust by selecting trust and 5:
+
+\begin{verbatim}
+$ gpg --edit-key $KEYID
+
+gpg> trust
+.. SNIP ..
+Your decision? 5
+.. SNIP ..
+
+gpg> quit
+\end{verbatim}
+
+export the key 
+\begin{verbatim}
+gpg --keyid-format long --with-fingerprint --list-key
+$KEY_ID=XXXX
+cryptsetup open <device> <name>
+mount -t fstype /dev/mapper/<name> <mount_point>
+gpg --armor --export-secret-key ${KEY_ID} > /mnt_point${KEY_ID}.priv
+gpg --armor --export ${KEY_ID} > /mnt_point/${KEY_ID}.pub
+gpg --armor --export-secret-subkeys ${KEY_ID}> /mnt_point/$(KEY_ID}.subkeys.priv 
+$ cat ~/.gnupg/openpgp-revocs.d/${KEY_ID}.rev > /mnt_point/${KEY_ID}.rev
+$ rm cat ~/.gnupg/openpgp-revocs.d/${KEY_ID}.rev
+\end{verbatim}
+
+
+on target import public key and both private subkey
+\begin{verbatim}
+gpg --import /mnt_point/$(KEY_ID}.subkeys.priv 
+gpg --import /mnt_point/$(KEY_ID}.pub 
+gpg --edit-key ${KEY_ID} 
+gpg> trust
+gpg> save
+\end{verbatim}
+
+\subsection{key renewing}
+
+PGP does not provide forward secrecy - a compromised key  may be used to decrypt all past messages. Although keys stored on  YubiKey are difficult to steal, it is not impossible - the key and PIN  could be taken, or a vulnerability may be discovered in key hardware or  the random number generator used to create them, for example. Therefore,  it is good practice to occassionally rotate sub-keys.
+When a sub-key expires, it can either be renewed or  replaced. Both actions require access to the offline master key.  Renewing sub-keys by updating their expiration date indicates you are  still in possession of the offline master key and is more convenient.
+Replacing keys, on the other hand, is less convenient but more secure: the new sub-keys will not  be able to decrypt previous messages, authenticate with SSH, etc.  Contacts will need to receive the updated public key and any encrypted  secrets need to be decrypted and re-encrypted to new sub-keys to be  usable. This process is functionally equivalent to "losing" the YubiKey  and provisioning a new one. However, you will always be able to decrypt  previous messages using the offline encrypted backup of the original  keys.
+Neither rotation method is superior and it's up to  personal philosophy on identity management and individual threat model  to decide which one to use, or whether to expire sub-keys at all.  Ideally, sub-keys would be ephemeral: used only once for each  encryption, signing and authentication event, however in practice that  is not really feasible nor worthwhile with YubiKey. Advanced users may  want to dedicate an offline device for more frequent key rotations and  ease of provisioning.
+
+
+
+\subsubsection{Setup environment}
+To renew or rotate sub-keys, follow the same process as  generating keys: boot to a secure environment, install required software  and disconnect networking.
+Connect the offline secret storage device with the master keys and identify the disk label:
+
+\begin{verbatim}
+$ sudo dmesg | tail
+mmc0: new high speed SDHC card at address a001
+mmcblk0: mmc0:a001 SS16G 14.8 GiB (ro)
+mmcblk0: p1 p2
+\end{verbatim}
+
+Decrypt and mount the offline volume:
+
+\begin{verbatim}
+$ sudo cryptsetup luksOpen /dev/mmcblk0p1 secret
+Enter passphrase for /dev/mmcblk0p1:
+
+$ sudo mount /dev/mapper/secret /mnt/encrypted-storage
+\end{verbatim}
+
+Import the master key and configuration to a temporary working directory. Note that Windows users should import mastersub.gpg:
+
+\begin{verbatim}
+$ export GNUPGHOME=$(mktemp -d -t gnupg_$(date +%Y%m%d%H%M)_XXX)
+
+$ gpg --import /mnt/encrypted-storage/tmp.XXX/mastersub.key
+
+$ cp -v /mnt/encrypted-storage/tmp.XXX/gpg.conf $GNUPGHOME
+\end{verbatim}
+
+Edit the master key:
+
+\begin{verbatim}
+$ export KEYID=0xFF3E7D88647EBCDB
+$ gpg --expert --edit-key $KEYID
+\end{verbatim}
+
+\subsubsection{Renewing sub-keys}
+Renewing sub-keys is simpler: you do not need to generate  new keys, move keys to the YubiKey, or update any SSH public keys linked  to the GPG key.  All you need to do is to change the expiry time  associated with the public key (which requires access to the master key  you just loaded) and then to export that public key and import it on any  computer where you wish to use the GPG (as distinct from the SSH) key.
+To change the expiration date of all sub-keys, start by selecting all keys:
+
+\begin{verbatim}
+$ gpg --edit-key $KEYID
+gpg> key 1
+gpg> key 2
+gpg> key 3
+\end{verbatim}
+
+Then, use the expire command to set a new expiration date.  (Despite the name, this will not cause currently valid keys to become expired.)
+
+\begin{verbatim}
+gpg> expire
+$ gpg --armor --export $KEYID > gpg-$KEYID-$(date +%F).asc
+$ gpg --import gpg-0x*.asc
+\end{verbatim}
+
+This will extend the validity of your GPG key and will allow you to use it for
+SSH authorization.  Note that you do not need to update the SSH public key
+located on remote servers.
+
+\subsection{key rotation}
+
+\subsubsection{Create a new key pair}
+
+Let’s start generating the new key pair, without expiration date (we will be able to set one if needed in the future):
+
+\begin{verbatim}
+$ gpg --full-generate-key
+\end{verbatim}
+
+We got the key ID 31EFB482E969EB74399DBBC5E881015C8A55678B, which we’ll be using to reference the key whenever needed (like editing the key, adding signatures, …).
+
+Note that a revocation certificate has already been created, so we don’t need to create a new one if we don’t want:
+
+gpg: revocation certificate stored as
+\verb+~/.gnupg/openpgp-revocs.d/31EFB482E969EB74399DBBC5E881015C8A55678B.rev'+
+
+Add UIDs
+
+Now let’s add any extra ID that we would want to use to the key pair. 
+
+\begin{verbatim}
+$ gpg --edit-key 31EFB482E969EB74399DBBC5E881015C8A55678B
+gpg> adduid
+gpg> trust
+gpg> save
+\end{verbatim}
+
+Now that we have multiple UIDs within the same key, it’s important to check that the primary UID is properly set. If not, we have to change it:
+
+\begin{verbatim}
+$ gpg --edit-key 31EFB482E969EB74399DBBC5E881015C8A55678B
+gpg> uid 2
+gpg> primary
+gpg> save
+\end{verbatim}
+
+\subsubsection{Create subkeys}
+
+At this moment, we have a key pair generated and containing the UIDs we want to use, and we could be good to go, but, what would happen if we lost the laptop where this key pair is stored? We would have to revoke them and generate a new key pair, loosing all its signatures and the trust gathered with time.
+
+In order to avoid this situation is a common (and good) practice to generate what is known as laptop keys. These keys are disposable keys that are linked to your master key and that you would copy to the device where you would use them as usual, keeping the master key safe offline.
+
+If by any eventuality you’d loose access to those laptop keys you could easily revoke them with the master key and generate a new set to replace them, but the master key pair (and thus your PGP/GPG ID) would remain the same.
+
+Sounds good? Let’s generate a new subkey for signing. If you’ve paid attention to the process you’d have notice that a subkey for encrypting was already generated for your master key (ssb rsa4096/89BF354A17A61CC5 with usage: E), so no need to generate an extra key for that, as we already got one:
+
+\begin{verbatim}
+$ gpg --edit-key 31EFB482E969EB74399DBBC5E881015C8A55678B
+gpg> addkey
+gpg> save
+\end{verbatim}
+
+Note that I’ve set up an expire date for this subkey, as I want to rotate them from time to time. We would probably also want to set an expire date for the previously created encryption subkey:
+
+\begin{verbatim}
+$ gpg --edit-key 31EFB482E969EB74399DBBC5E881015C8A55678B
+gpg> expire
+gpg> save
+\end{verbatim}
+
+Rotate your previous key pair
+
+This is the tricky and painful part of the process, as you are effectively decomissioning your previous PGP/GPG ID, loosing the created web of trust around it.
+
+In order to let the world know that your new key pair actually belongs to you without having to meet in person again, the standard procedure is to sign the new key with the old one and the other way around, establishing a hard trust link between them (this action could not have been done without access to the old secret key, so as far as anyone can tell, this two-way signature could only have been done by you).
+Signing the new and old public keys
+
+First of all, let’s check that both secret keys are available in our keyring:
+
+\begin{verbatim}
+$ gpg --list-secret-keys
+\end{verbatim}
+
+Now in order to establish trust between the new and the old keys, we have to sign each other. First let’s sign the new key with old one:
+
+\begin{verbatim}
+$ gpg --default-key F6D13162F2BEF65838F6C8E6BF3B5AFCD4480E60 --sign-key 31EFB482E969EB74399DBBC5E881015C8A55678B
+\end{verbatim}
+
+And then the other way around:
+
+\begin{verbatim}
+$ gpg --default-key 31EFB482E969EB74399DBBC5E881015C8A55678B --sign-key F6D13162F2BEF65838F6C8E6BF3B5AFCD4480E60
+$ gpg --list-sigs E881015C8A55678B
+\end{verbatim}
+
+reflect a signature on a UID. BF3B5AFCD4480E60 is the sort ID of my old key.
+
+\subsubsection{Revoke old key pair}
+
+Now we have to effectively decomission the old key pair. For that, we have to generate a revocation certificate for it:
+
+\begin{verbatim}
+$ gpg -a --gen-revoke BF3B5AFCD4480E60 > BF3B5AFCD4480E60.rev
+$ gpg --import BF3B5AFCD4480E60.rev
+$ gpg --list-secret-keys
+\end{verbatim}
+
+And we’re done! Next step is to publish our changes to the world.
+
+\subsubsection{Publish to PGP servers}
+
+We have to publish our new key pair and also the revoked old key pair. I’ve published them to two separate PGP servers in order to speed up the spreading of the changes, but that’s not strictly necessary as the key servers sync between them from time to time.
+\begin{verbatim}
+$ gpg --keyserver hkp://pgp.mit.edu --send-keys BF3B5AFCD4480E60 E881015C8A55678B
+$ gpg --keyserver hkp://pgp.surfnet.nl --send-keys BF3B5AFCD4480E60 E881015C8A55678B
+\end{verbatim}
+
+\subsubsection{Publish to Keybase}
+
+If you are a Keybase user, you should also publish your new key there:
+
+\begin{verbatim}
+$ keybase pgp select
+You are selecting a PGP key from your local GnuPG keychain, and
+will publish a statement signed with this key to make it part of
+your Keybase.io identity.
+
+Note that GnuPG will prompt you to perform this signature.
+
+You can also import the secret key to *local*, *encrypted* Keybase
+keyring, enabling decryption and signing with the Keybase client.
+To do that, use "--import" flag.
+
+Learn more: keybase pgp help select
+
+#    Algo    Key Id             Created   UserId
+=    ====    ======             =======   ======
+1    4096R   E881015C8A55678B             Daniel Pecos Martinez <me@danielpecos.com>, Daniel Pecos Martinez <dani@dplabs.io>
+Choose a key: 1
+ INFO Generated new PGP key:
+ INFO   user: Daniel Pecos Martinez <me@danielpecos.com>
+ INFO   4096-bit RSA key, ID E881015C8A55678B, created 2019-03-27
+\end{verbatim}
+
+\subsubsection{Backup everything}
+
+Last step is to make a backup of our new key pair (and the old one if we didn’t already). We will encrypt the private key files before storing them, adding an extra layer of security in case these files are uploaded to a cloud storage or somewhere else not 100% under our control.
+
+First the old key pair (public \& secret):
+
+\begin{verbatim}
+$ gpg --export --armor BF3B5AFCD4480E60> BF3B5AFCD4480E60.pub
+$ gpg --export-secret-keys --armor BF3B5AFCD4480E60 | gpg --symmetric --armor > BF3B5AFCD4480E60.sec
+\end{verbatim}
+
+Latest command will ask you for a password 3 times: the first two correspond to the symmetric encryption and the password has to be exactly the same the first two times; third time corresponds to the key pair’s password (the one you set up while creating the new pair).
+
+Now let’s backup the new key pair (also public \& secret):
+
+\begin{verbatim}
+$ gpg --export --armor E881015C8A55678B > E881015C8A55678B.pub
+$ gpg --export-secret-keys --armor E881015C8A55678B | gpg --symmetric --armor > E881015C8A55678B.sec
+\end{verbatim}
+
+And also the revocation certificate that was generate during key creation:
+
+\begin{verbatim}
+$ cat ~/.gnupg/openpgp-revocs.d/31EFB482E969EB74399DBBC5E881015C8A55678B.rev |  gpg --symmetric --armor > E881015C8A55678B.rev
+$ rm cat ~/.gnupg/openpgp-revocs.d/31EFB482E969EB74399DBBC5E881015C8A55678B.rev
+\end{verbatim}
+
+When exporting and encrypting the secret keys, we must use a different password for the backup encryption than the key’s password, otherwise this extra layer won’t provide any security in case of a 3rd party trying to break the password.
+Store your master key pair offline and remove it from your keyring - Laptop keys
+
+Now that we have everything backed up, we should remove our master key from the day-to-day device and use only the previously generated subkeys. The process is a little bit tricky, but not really hard. First of all, let’s export the subkeys to a (encrypted) file:
+
+\begin{verbatim}
+$ gpg --export-secret-subkeys --armor E881015C8A55678B | gpg --symmetric --armor > E881015C8A55678B-subkeys.sec
+\end{verbatim}
+
+Now we delete the master key from our keyring (public \& private keys):
+
+\begin{verbatim}
+$ gpg --delete-secret-key E881015C8A55678B
+$ gpg --delete-key E881015C8A55678B
+\end{verbatim}
+
+And finally we import back just the subkeys. First the secret part:
+
+\begin{verbatim}
+$ cat E881015C8A55678B-subkeys.sec | gpg --decrypt | gpg --import
+\end{verbatim}
+
+and then the public:
+
+\begin{verbatim}
+$ cat E881015C8A55678B.pub| gpg --import
+\end{verbatim}
+
+Lastly we have to reset trust to ultimate for the imported subkeys:
+
+\begin{verbatim}
+$ gpg --edit-key 31EFB482E969EB74399DBBC5E881015C8A55678B
+gpg> trust
+gpg> save
+\end{verbatim}
+Key not changed so no update needed.
+
+Let’s double check that we don’t have the master key available in our keyring, just the subkeys. If we try to edit the master key:
+
+\begin{verbatim}
+$ gpg --edit-key 31EFB482E969EB74399DBBC5E881015C8A55678B
+gpg> addkey
+Need the secret key to do this.
+
+$ gpg --gen-revoke 31EFB482E969EB74399DBBC5E881015C8A55678B
+gpg: secret key "31EFB482E969EB74399DBBC5E881015C8A55678B" not found: No secret key
+\end{verbatim}
+
+For those critical operations we will have to import the backed up master key. For business as usual operations, subkeys are good enough, and if we loose them, we can restore the master key, revoke the subkeys and generate a new set, without our changing PGP/GPG ID and thus loosing the established trust.
+
+
+\section{links}
+\begin{itemize}
+\item
+    \url{https://www.gnupg.org/documentation/manuals/gnupg/OpenPGP-Options.html}
+\item \url{https://www.youtube.com/watch?v=G7_yBOwYMEY}
+\item \url{https://gnupg.org/gph/fr/manual.html}
+\item
+    \url{https://www.linuxbabe.com/security/a-practical-guide-to-gpg-part-1-generate-your-keypair}
+
+\item \url{https://github.com/drduh/YubiKey-Guide}
+\end{itemize}
+
+
+

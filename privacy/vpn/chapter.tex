@@ -1,0 +1,64 @@
+\chapter{VPN}
+
+\section{openvpn}
+
+in case of error 
+\begin{verbatim}
+error=CA signature digest algorithm too weak
+\end{verbatim}
+edit the client file to add
+\begin{verbatim}
+tls-cipher "DEFAULT:@SECLEVEL=0"
+\end{verbatim}
+
+\section{nordvpn}
+
+
+\subsection{connecting to NordVPN using NetworkManager (Kali)}
+
+\subsubsection{Avoid DNS leak}
+
+To prevent DNS leak  in "IPv4 settings",  on method : choose "Automatic (VPN)
+addresses only" and manually enter the NordVPN DNS adresses in "DNS servers" :
+"103.86.96.100, 103.86.99.100" (Separated by a comma)
+
+\subsubsection{Use a killswitch}
+
+The NordVPN killswitch will not work with this method, it must be manually
+created using ufw or iptables.
+
+Firt get the IP and port of the VPN server in the nordvpn config file and 
+
+\begin{verbatim}
+sudo ufw allow in to 192.168.X.0/24
+sudo ufw allow out to 192.168.X.0/24
+
+udo ufw default deny outgoing
+sudo ufw default deny incoming
+sudo ufw allow out on tun0 from any to any
+
+sudo ufw allow out to NORD_IP port NORD_PORT proto tcp
+
+# if device should be connectable by others
+# sudo ufw allow in on tun0 from any to any
+\end{verbatim}
+
+Allow routing to all interfaces
+\begin{verbatim}
+  $ nmcli connection   # Note the name of the VPN connection here
+  $ nmcli connection edit (connection_name)
+  > set ipv4.never-default true
+  > set ipv6.never-default true
+  > save
+  > quit
+\end{verbatim}
+
+
+\subsubsection{Testing}
+\begin{verbatim}
+curl ifconfig.me
+\end{verbatim}
+
+\url{https://ipleak.net/}
+
+

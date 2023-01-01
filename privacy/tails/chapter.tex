@@ -1,0 +1,47 @@
+\chapter{Tails OS}
+
+\url{https://tails.boum.org}
+
+\section{tails in a VM}
+\subsection{Security considerations}
+
+Running Tails inside a virtual machine has various security implications.
+Depending on the host operating system and your security needs, running Tails
+in a virtual machine might be dangerous.
+
+    Both the host operating system and the virtualization software are able to
+    monitor what you are doing in Tails.
+
+    If the host operating system is compromised with a software keylogger or
+    other malware, then it can break the security features of Tails.
+
+    Only run Tails in a virtual machine if both the host operating system and
+    the virtualization software are trustworthy.
+
+    Traces of your Tails session are likely to be left on the local hard disk.
+    For example, host operating systems usually use swapping (or paging) which
+    copies part of the RAM to the hard disk.
+
+    Only run Tails in a virtual machine if leaving traces on the hard disk is
+    not a concern for you.
+
+The Tails virtual machine does not modify the behaviour of the host operating
+system and the network traffic of the host is not anonymized. The MAC address
+of the computer is not modified by the MAC address anonymization feature of
+Tails when run in a virtual machine. 
+\subsection{libvirt}
+\begin{verbatim}
+To create a new virtual machine, choose File ▸ New Virtual Machine.
+In step 1, choose Local install media (ISO image or CDROM).
+In step 2:
+    Choose ISO image, then Browse..., and Browse Local to browse for the ISO image that you want to start from.
+    Unselect Automatically detected from the installation media / source.
+    Specify Debian 10 in the field Choose the operating system you are installing.
+In step 3, allocate at least 2048 MB of RAM.
+In step 4, unselect Enable storage for this virtual machine.
+In step 5:
+    Type a name of your choice for the new virtual machine.
+    Click Finish to start the virtual machine.
+\end{verbatim}
+
+

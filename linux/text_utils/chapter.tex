@@ -1,0 +1,103 @@
+\chapter{Text processing utilities}
+\begin{itemize}
+        \item cat – Concatenate files and print on the standard output
+        \item sort – Sort lines of text files
+        \item uniq – Report or omit repeated lines
+        \item cut – Remove sections from each line of files
+        \item paste – Merge lines of files
+        \item join – Join lines of two files on a common field
+        \item comm – Compare two sorted files line by line
+        \item diff – Compare files line by line
+        \item patch – Apply a diff file to an original
+        \item tr – Translate or delete characters
+        \item sed – Stream editor for filtering and transforming text
+        \item aspell – Interactive spell checker
+\end{itemize}
+
+\section{filtering}
+\subsection{grep}
+{\bf global regular expression print}
+\begin{verbatim}
+grep [options] regex [file...]
+\end{verbatim}
+
+\section{Slicing and dicing}
+
+\subsection{cut}
+
+\begin{verbatim}
+    -c char_list comma separated range list
+    -f field_list comma separated list of int
+    -d 'char' delimiter
+    --complement
+\end{verbatim}
+
+\begin{verbatim}
+ls -l | cut -c 1-10
+cat /etc/passwd | cut -d ':' -f 1,2
+\end{verbatim}
+
+
+
+\subsection{paste}
+Adds one or more columns of text to a file.
+It does this by reading multiple
+files and combining the fields found in each file into a single stream on standard output
+
+\verb+paste file_1 [ file_2]+
+
+\subsection{join}
+
+\section{Comparing}
+
+\subsection{comm}
+
+compare 2 text files
+
+\subsection{diff}
+\subsection{patch}
+The patch program is used to apply changes to text filesex
+
+\subsection{On the fly}
+\subsection{tr}
+used to transliterate characters. We can think of this as a sort of
+charcter-based search-and-replace operation.
+
+\begin{verbatim}
+echo "lowercase letters" | tr a-z A-Z
+\end{verbatim}
+\subsection{sed}
+
+sed is short for stream editor
+
+\verb+echo "front" | sed 's/front/back/'+
+
+\subsection{aspell}
+an interactive spelling checker
+\section{misc}
+\subsection{sort}
+
+\begin{verbatim}
+    -b igore leading blanks on the line
+    -f ignore the case
+    -n sort based on numerci evaluation of the string
+    -r reverse
+    -k field1[,field2] sort based on field value
+    -m merge multiple files
+    -o file output
+    -t 'sep' field separator
+\end{verbatim}
+
+\verb+sort -t ':' -k 4 /etc/passwd+
+
+\subsection{uniq}
+
+\begin{verbatim}
+    -c add the number of duplicates
+    -d output only repeated lines
+    -f n ignore n leading fields (not option for separator
+    -i ignore case
+    -s n skip n leading chars
+\end{verbatim}
+
+
