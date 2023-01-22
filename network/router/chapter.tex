@@ -1,0 +1,57 @@
+\chapter{Router}
+
+\section{ip tables}
+
+\section{Enable IP Forwarding}
+check ip forward :
+\begin{verbatim}
+$ sudo sysctl net.ipv4.ip_forward
+$ cat /proc/sys/net/ipv4/ip_forward
+\end{verbatim}
+
+
+enable ip forward :
+
+\begin{verbatim}
+/etc/sysctl.conf
+\end{verbatim}
+
+
+or temporary \verb+echo 1 > /proc/sys/net/ipv4/ip_forward+
+
+reload:
+\begin{verbatim}
+sudo sysctl -p
+\end{verbatim}
+
+
+\section{Define rule}
+
+\subsection{Route to vpn}
+\begin{verbatim}
+sudo iptables -A FORWARD -i eth0 -o tun0 -j ACCEPT
+sudo iptables -A FORWARD -i tun0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -t nat -A POSTROUTING -j MASQUERADE  -s 192.168.2.0/24 -o tun0 
+\end{verbatim}
+
+By default, iptables rules are ephemeral:
+
+\section{ufw}
+
+\verb+etc/ufw/sysctl.conf+:
+\begin{verbatim}
+     net/ipv4/ip_forward=1
+     net/ipv6/conf/default/forwarding=1
+     net/ipv6/conf/all/forwarding=1
+\end{verbatim}
+
+\begin{verbatim}
+ufw route allow in on eth1 out on eth2
+\end{verbatim}
+
+
+\section{Clients}
+\subsection{windows}
+\begin{verbatim}
+route add 10.10.10.0 mask 255.255.254.0  router_ip
+\end{verbatim}

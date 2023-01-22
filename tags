@@ -1,0 +1,150 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/benmusashi/documents/system-bible/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20220828.0/
+Anchoring	linux/regex/chapter.tex	/^\\subsection{Anchoring}$/;"	u	language:Tex	section:Regular expressions""Extended Regular Expression
+Automated unlocking and mounting	privacy/luks/chapter.tex	/^\\subsubsection{Automated unlocking and mounting}$/;"	b	language:Tex	subsection:Data-at-rest encryption""dm-crypt""Encrypting a non-root file system
+Avoid DNS leak	network/vpn/chapter.tex	/^\\subsubsection{Avoid DNS leak}$/;"	b	language:Tex	subsection:VPN""nordvpn""connecting to NordVPN using NetworkManager (Kali)
+Back-references and Subexpressions	linux/regex/chapter.tex	/^\\subsection{Back-references and Subexpressions}$/;"	u	language:Tex	section:Regular expressions""Extended Regular Expression
+Backup everything	privacy/pgp/chapter.tex	/^\\subsubsection{Backup everything}$/;"	b	language:Tex	subsection:PGP""GnuPG""key rotation
+Basic vs Extended Regular Expressions	linux/regex/chapter.tex	/^\\section{Basic vs Extended Regular Expressions}$/;"	s	language:Tex	chapter:Regular expressions
+Best practice	privacy/pgp/chapter.tex	/^\\subsection{Best practice}$/;"	u	language:Tex	section:PGP""GnuPG
+Block device encryption	privacy/luks/chapter.tex	/^\\subsection{Block device encryption}$/;"	u	language:Tex	section:Data-at-rest encryption""Introduction
+Character Classes and Bracket Expressions	linux/regex/chapter.tex	/^\\subsection{Character Classes and Bracket Expressions}$/;"	u	language:Tex	section:Regular expressions""Extended Regular Expression
+Clients	network/router/chapter.tex	/^\\section{Clients}$/;"	s	language:Tex	chapter:Router
+Comparing	linux/text_utils/chapter.tex	/^\\section{Comparing}$/;"	s	language:Tex	chapter:Text processing utilities
+Create a new key pair	privacy/pgp/chapter.tex	/^\\subsubsection{Create a new key pair}$/;"	b	language:Tex	subsection:PGP""GnuPG""key rotation
+Create subkeys	privacy/pgp/chapter.tex	/^\\subsubsection{Create subkeys}$/;"	b	language:Tex	subsection:PGP""GnuPG""key rotation
+Dark/Deep Web	privacy/dark/chapter.tex	/^\\chapter{Dark\/Deep Web}$/;"	c	language:Tex
+Data-at-rest encryption	privacy/luks/chapter.tex	/^\\chapter{Data-at-rest encryption}$/;"	c	language:Tex
+Define rule	network/router/chapter.tex	/^\\section{Define rule}$/;"	s	language:Tex	chapter:Router
+Drive preparation	privacy/luks/chapter.tex	/^\\subsubsection{Drive preparation}$/;"	b	language:Tex	subsection:Data-at-rest encryption""dm-crypt""Encrypting a non-root file system
+Enable IP Forwarding	network/router/chapter.tex	/^\\section{Enable IP Forwarding}$/;"	s	language:Tex	chapter:Router
+Encrypting a non-root file system	privacy/luks/chapter.tex	/^\\subsection{Encrypting a non-root file system}$/;"	u	language:Tex	section:Data-at-rest encryption""dm-crypt
+Encrypting an entire system	privacy/luks/chapter.tex	/^\\subsection{Encrypting an entire system}$/;"	u	language:Tex	section:Data-at-rest encryption""dm-crypt
+Encrypting documents	privacy/pgp/chapter.tex	/^\\subsubsection{Encrypting documents}$/;"	b	language:Tex	subsection:PGP""GnuPG""Using Keys
+Example	linux/systemd/chapter.tex	/^\\subsection{Example}$/;"	u	language:Tex	section:systemctl""timers
+Extended Regular Expression	linux/regex/chapter.tex	/^\\section{Extended Regular Expression}$/;"	s	language:Tex	chapter:Regular expressions
+Fundamental Structure	linux/regex/chapter.tex	/^\\subsection{Fundamental Structure}$/;"	u	language:Tex	section:Regular expressions""Extended Regular Expression
+GnuPG	privacy/pgp/chapter.tex	/^\\section{GnuPG}$/;"	s	language:Tex	chapter:PGP
+Identifying GPG keys	privacy/pgp/chapter.tex	/^\\subsubsection{Identifying GPG keys}$/;"	b	language:Tex	subsection:PGP""GnuPG""Key listing
+Introduction	linux/systemd/chapter.tex	/^\\subsection{Introduction}$/;"	u	language:Tex	section:systemctl""timers
+Introduction	privacy/luks/chapter.tex	/^\\section{Introduction}$/;"	s	language:Tex	chapter:Data-at-rest encryption
+Introduction	privacy/pgp/chapter.tex	/^\\subsection{Introduction}$/;"	u	language:Tex	section:PGP""GnuPG
+Key integrity	privacy/pgp/chapter.tex	/^\\subsection{Key integrity}$/;"	u	language:Tex	section:PGP""GnuPG
+Key listing	privacy/pgp/chapter.tex	/^\\subsection{Key listing}$/;"	u	language:Tex	section:PGP""GnuPG
+Keypair	privacy/pgp/chapter.tex	/^\\subsubsection{Keypair}$/;"	b	language:Tex	subsection:PGP""GnuPG""Introduction
+Linux	linux/part.tex	/^\\part{Linux}$/;"	p	language:Tex
+Makefile	Makefile	1;"	F	language:Make	epoch:1665391432
+Management	linux/systemd/chapter.tex	/^\\subsection{Management}$/;"	u	language:Tex	section:systemctl""timers
+Manual mounting and unmounting	privacy/luks/chapter.tex	/^\\subsubsection{Manual mounting and unmounting}$/;"	b	language:Tex	subsection:Data-at-rest encryption""dm-crypt""Encrypting a non-root file system
+Master key Generation	privacy/pgp/chapter.tex	/^\\subsection{Master key Generation}$/;"	u	language:Tex	section:PGP""GnuPG
+Monotonic timer	linux/systemd/chapter.tex	/^\\subsubsection{Monotonic timer}$/;"	b	language:Tex	subsection:systemctl""timers""Example
+Network	network/part.tex	/^\\part{Network}$/;"	p	language:Tex
+On the fly	linux/text_utils/chapter.tex	/^\\subsection{On the fly}$/;"	u	language:Tex	section:Text processing utilities""Comparing
+Operating on GPG keys	privacy/pgp/chapter.tex	/^\\subsection{Operating on GPG keys}$/;"	u	language:Tex	section:PGP""GnuPG
+PGP	privacy/pgp/chapter.tex	/^\\chapter{PGP}$/;"	c	language:Tex
+Parititonning	privacy/luks/chapter.tex	/^\\subsubsection{Parititonning}$/;"	b	language:Tex	subsection:Data-at-rest encryption""dm-crypt""Encrypting a non-root file system
+Passphrase rotation	privacy/luks/chapter.tex	/^\\subsubsection{Passphrase rotation}$/;"	b	language:Tex	subsection:Data-at-rest encryption""dm-crypt""Encrypting a non-root file system
+Pentesting plugins	privacy/part.tex	/^\\subsubsection{Pentesting plugins}$/;"	b	language:Tex	section:Privacy and security""Web browser""firefox
+Privacy and security	privacy/part.tex	/^\\part{Privacy and security}$/;"	p	language:Tex
+Privacy plugins	privacy/part.tex	/^\\subsubsection{Privacy plugins}$/;"	b	language:Tex	section:Privacy and security""Web browser""firefox
+Publish to Keybase	privacy/pgp/chapter.tex	/^\\subsubsection{Publish to Keybase}$/;"	b	language:Tex	subsection:PGP""GnuPG""key rotation
+Publish to PGP servers	privacy/pgp/chapter.tex	/^\\subsubsection{Publish to PGP servers}$/;"	b	language:Tex	subsection:PGP""GnuPG""key rotation
+Realtime timer	linux/systemd/chapter.tex	/^\\subsubsection{Realtime timer}$/;"	b	language:Tex	subsection:systemctl""timers""Example
+Regular expressions	linux/regex/chapter.tex	/^\\chapter{Regular expressions}$/;"	c	language:Tex
+Renewing sub-keys	privacy/pgp/chapter.tex	/^\\subsubsection{Renewing sub-keys}$/;"	b	language:Tex	subsection:PGP""GnuPG""key renewing
+Revocation	privacy/pgp/chapter.tex	/^\\subsection{Revocation}$/;"	u	language:Tex	section:PGP""GnuPG
+Revoke old key pair	privacy/pgp/chapter.tex	/^\\subsubsection{Revoke old key pair}$/;"	b	language:Tex	subsection:PGP""GnuPG""key rotation
+Revoking a key	privacy/pgp/chapter.tex	/^\\subsubsection{Revoking a key}$/;"	b	language:Tex	subsection:PGP""GnuPG""Revocation
+Revoking a subkey	privacy/pgp/chapter.tex	/^\\subsubsection{Revoking a subkey}$/;"	b	language:Tex	subsection:PGP""GnuPG""Revocation
+Route to vpn	network/router/chapter.tex	/^\\subsection{Route to vpn}$/;"	u	language:Tex	section:Router""Define rule
+Router	network/router/chapter.tex	/^\\chapter{Router}$/;"	c	language:Tex
+Search engine	privacy/dark/chapter.tex	/^\\section{Search engine}$/;"	s	language:Tex	chapter:Dark/Deep Web
+Search for files	linux/search/chapter.tex	/^\\chapter{Search for files}$/;"	c	language:Tex
+Security considerations	privacy/tails/chapter.tex	/^\\subsection{Security considerations}$/;"	u	language:Tex	section:Tails OS""tails in a VM
+Setup environment	privacy/pgp/chapter.tex	/^\\subsubsection{Setup environment}$/;"	b	language:Tex	subsection:PGP""GnuPG""key renewing
+Signing documents	privacy/pgp/chapter.tex	/^\\subsubsection{Signing  documents}$/;"	b	language:Tex	subsection:PGP""GnuPG""Using Keys
+Slicing and dicing	linux/text_utils/chapter.tex	/^\\section{Slicing and dicing}$/;"	s	language:Tex	chapter:Text processing utilities
+Special Backslash Expressions	linux/regex/chapter.tex	/^\\subsection{Special Backslash Expressions}$/;"	u	language:Tex	section:Regular expressions""Extended Regular Expression
+Stacked filesystem encryption	privacy/luks/chapter.tex	/^\\subsection{Stacked filesystem encryption}$/;"	u	language:Tex	section:Data-at-rest encryption""Introduction
+Subkey	privacy/pgp/chapter.tex	/^\\subsubsection{Subkey}$/;"	b	language:Tex	subsection:PGP""GnuPG""Introduction
+Tails OS	privacy/tails/chapter.tex	/^\\chapter{Tails OS}$/;"	c	language:Tex
+Testing	network/vpn/chapter.tex	/^\\subsubsection{Testing}$/;"	b	language:Tex	subsection:VPN""nordvpn""connecting to NordVPN using NetworkManager (Kali)
+Text processing utilities	linux/text_utils/chapter.tex	/^\\chapter{Text processing utilities}$/;"	c	language:Tex
+Tor	privacy/tor/chapter.tex	/^\\chapter{Tor}$/;"	c	language:Tex
+Use a killswitch	network/vpn/chapter.tex	/^\\subsubsection{Use a killswitch}$/;"	b	language:Tex	subsection:VPN""nordvpn""connecting to NordVPN using NetworkManager (Kali)
+Using Keys	privacy/pgp/chapter.tex	/^\\subsection{Using Keys}$/;"	u	language:Tex	section:PGP""GnuPG
+VPN	network/vpn/chapter.tex	/^\\chapter{VPN}$/;"	c	language:Tex
+Validating other keys on your public keyring	privacy/pgp/chapter.tex	/^\\subsection{Validating other keys on your public keyring}$/;"	u	language:Tex	section:PGP""GnuPG
+Web browser	privacy/part.tex	/^\\chapter{Web browser}$/;"	c	language:Tex	part:Privacy and security
+aspell	linux/text_utils/chapter.tex	/^\\subsection{aspell}$/;"	u	language:Tex	section:Text processing utilities""Comparing
+chapter.tex	linux/regex/chapter.tex	1;"	F	language:Tex	epoch:1665746786
+chapter.tex	linux/search/chapter.tex	1;"	F	language:Tex	epoch:1665740170
+chapter.tex	linux/systemd/chapter.tex	1;"	F	language:Tex	epoch:1665659812
+chapter.tex	linux/text_utils/chapter.tex	1;"	F	language:Tex	epoch:1665759998
+chapter.tex	network/router/chapter.tex	1;"	F	language:Tex	epoch:1674358822
+chapter.tex	network/vpn/chapter.tex	1;"	F	language:Tex	epoch:1668073235
+chapter.tex	privacy/dark/chapter.tex	1;"	F	language:Tex	epoch:1665394675
+chapter.tex	privacy/luks/chapter.tex	1;"	F	language:Tex	epoch:1667129341
+chapter.tex	privacy/pgp/chapter.tex	1;"	F	language:Tex	epoch:1665857242
+chapter.tex	privacy/proxychains/chapter.tex	1;"	F	language:Tex	epoch:1665394517
+chapter.tex	privacy/tails/chapter.tex	1;"	F	language:Tex	epoch:1665660068
+chapter.tex	privacy/tor/chapter.tex	1;"	F	language:Tex	epoch:1665391031
+clean	Makefile	/^clean:$/;"	t	language:Make
+clean-all	Makefile	/^clean-all:$/;"	t	language:Make
+comm	linux/text_utils/chapter.tex	/^\\subsection{comm}$/;"	u	language:Tex	section:Text processing utilities""Comparing
+connecting to NordVPN using NetworkManager (Kali)	network/vpn/chapter.tex	/^\\subsection{connecting to NordVPN using NetworkManager (Kali)}$/;"	u	language:Tex	section:VPN""nordvpn
+cut	linux/text_utils/chapter.tex	/^\\subsection{cut}$/;"	u	language:Tex	section:Text processing utilities""Slicing and dicing
+decrypting documents	privacy/pgp/chapter.tex	/^\\subsubsection{decrypting documents}$/;"	b	language:Tex	subsection:PGP""GnuPG""Using Keys
+diff	linux/text_utils/chapter.tex	/^\\subsection{diff}$/;"	u	language:Tex	section:Text processing utilities""Comparing
+dm-crypt	privacy/luks/chapter.tex	/^\\section{dm-crypt}$/;"	s	language:Tex	chapter:Data-at-rest encryption
+filename	Makefile	/^filename=system$/;"	m	language:Make
+filtering	linux/text_utils/chapter.tex	/^\\section{filtering}$/;"	s	language:Tex	chapter:Text processing utilities
+find	linux/search/chapter.tex	/^\\section{find}$/;"	s	language:Tex	chapter:Search for files
+firefox	privacy/part.tex	/^\\section{firefox}$/;"	s	language:Tex	chapter:Privacy and security""Web browser
+gl-techniques.tex	gl-techniques.tex	1;"	F	language:Tex	epoch:1665391523
+grep	linux/regex/chapter.tex	/^\\subsubsection{grep}$/;"	b	language:Tex	section:Regular expressions""Basic vs Extended Regular Expressions
+grep	linux/text_utils/chapter.tex	/^\\subsection{grep}$/;"	u	language:Tex	section:Text processing utilities""filtering
+index	system.tex	/^\\part{index}$/;"	p	language:Tex
+ip tables	network/router/chapter.tex	/^\\section{ip tables}$/;"	s	language:Tex	chapter:Router
+join	linux/text_utils/chapter.tex	/^\\subsection{join}$/;"	u	language:Tex	section:Text processing utilities""Slicing and dicing
+journalctl	linux/systemd/chapter.tex	/^\\subsection{journalctl}$/;"	u	language:Tex	section:systemctl""timers
+key renewing	privacy/pgp/chapter.tex	/^\\subsection{key renewing}$/;"	u	language:Tex	section:PGP""GnuPG
+key rotation	privacy/pgp/chapter.tex	/^\\subsection{key rotation}$/;"	u	language:Tex	section:PGP""GnuPG
+keyrings	privacy/pgp/chapter.tex	/^\\subsubsection{keyrings}$/;"	b	language:Tex	subsection:PGP""GnuPG""Introduction
+libvirt	privacy/tails/chapter.tex	/^\\subsection{libvirt}$/;"	u	language:Tex	section:Tails OS""tails in a VM
+links	privacy/pgp/chapter.tex	/^\\section{links}$/;"	s	language:Tex	chapter:PGP
+list-gls	Makefile	/^list-gls:$/;"	t	language:Make
+locate / mlocate	linux/search/chapter.tex	/^\\section{locate \/ mlocate}$/;"	s	language:Tex	chapter:Search for files
+misc	linux/text_utils/chapter.tex	/^\\section{misc}$/;"	s	language:Tex	chapter:Text processing utilities
+nordvpn	network/vpn/chapter.tex	/^\\section{nordvpn}$/;"	s	language:Tex	chapter:VPN
+openvpn	network/vpn/chapter.tex	/^\\section{openvpn}$/;"	s	language:Tex	chapter:VPN
+part.tex	linux/part.tex	1;"	F	language:Tex	epoch:1670674727
+part.tex	network/part.tex	1;"	F	language:Tex	epoch:1674358359
+part.tex	privacy/part.tex	1;"	F	language:Tex	epoch:1674355517
+paste	linux/text_utils/chapter.tex	/^\\subsection{paste}$/;"	u	language:Tex	section:Text processing utilities""Slicing and dicing
+patch	linux/text_utils/chapter.tex	/^\\subsection{patch}$/;"	u	language:Tex	section:Text processing utilities""Comparing
+pdf	Makefile	/^pdf: $/;"	t	language:Make
+proxychains	privacy/proxychains/chapter.tex	/^\\chapter{proxychains}$/;"	c	language:Tex
+sed	linux/text_utils/chapter.tex	/^\\subsection{sed}$/;"	u	language:Tex	section:Text processing utilities""Comparing
+sort	linux/text_utils/chapter.tex	/^\\subsection{sort}$/;"	u	language:Tex	section:Text processing utilities""misc
+system.tex	system.tex	1;"	F	language:Tex	epoch:1674355507
+systemctl	linux/systemd/chapter.tex	/^\\chapter{systemctl}$/;"	c	language:Tex
+systemctl	linux/systemd/chapter.tex	/^\\section{systemctl}$/;"	s	language:Tex	chapter:systemctl
+tails in a VM	privacy/tails/chapter.tex	/^\\section{tails in a VM}$/;"	s	language:Tex	chapter:Tails OS
+test	privacy/tor/chapter.tex	/^\\subsection{test}$/;"	u	language:Tex	chapter:Tor
+test privacy	privacy/part.tex	/^\\section{test privacy}$/;"	s	language:Tex	chapter:Privacy and security""Web browser
+timers	linux/systemd/chapter.tex	/^\\section{timers}$/;"	s	language:Tex	chapter:systemctl
+tr	linux/text_utils/chapter.tex	/^\\subsection{tr}$/;"	u	language:Tex	section:Text processing utilities""Comparing
+ufw	network/router/chapter.tex	/^\\section{ufw}$/;"	s	language:Tex	chapter:Router
+uniq	linux/text_utils/chapter.tex	/^\\subsection{uniq}$/;"	u	language:Tex	section:Text processing utilities""misc
+verifying signed documents	privacy/pgp/chapter.tex	/^\\subsubsection{verifying signed documents}$/;"	b	language:Tex	subsection:PGP""GnuPG""Using Keys
+windows	network/router/chapter.tex	/^\\subsection{windows}$/;"	u	language:Tex	section:Router""Clients
