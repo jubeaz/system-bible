@@ -24,9 +24,10 @@ Create a new key pair	privacy/pgp/chapter.tex	/^\\subsubsection{Create a new key
 Create subkeys	privacy/pgp/chapter.tex	/^\\subsubsection{Create subkeys}$/;"	b	language:Tex	subsection:PGP""GnuPG""key rotation
 Dark/Deep Web	privacy/dark/chapter.tex	/^\\chapter{Dark\/Deep Web}$/;"	c	language:Tex
 Data-at-rest encryption	privacy/luks/chapter.tex	/^\\chapter{Data-at-rest encryption}$/;"	c	language:Tex
-Define rule	network/router/chapter.tex	/^\\section{Define rule}$/;"	s	language:Tex	chapter:Router
+Define routing	network/router/chapter.tex	/^\\subsection{Define routing}$/;"	u	language:Tex	section:Router""ip tables
+Define rule	network/router/chapter.tex	/^\\subsubsection{Define rule}$/;"	b	language:Tex	subsection:Router""ip tables""Define routing
 Drive preparation	privacy/luks/chapter.tex	/^\\subsubsection{Drive preparation}$/;"	b	language:Tex	subsection:Data-at-rest encryption""dm-crypt""Encrypting a non-root file system
-Enable IP Forwarding	network/router/chapter.tex	/^\\section{Enable IP Forwarding}$/;"	s	language:Tex	chapter:Router
+Enable IP Forwarding	network/router/chapter.tex	/^\\subsubsection{Enable IP Forwarding}$/;"	b	language:Tex	subsection:Router""ip tables""Define routing
 Encrypting a non-root file system	privacy/luks/chapter.tex	/^\\subsection{Encrypting a non-root file system}$/;"	u	language:Tex	section:Data-at-rest encryption""dm-crypt
 Encrypting an entire system	privacy/luks/chapter.tex	/^\\subsection{Encrypting an entire system}$/;"	u	language:Tex	section:Data-at-rest encryption""dm-crypt
 Encrypting documents	privacy/pgp/chapter.tex	/^\\subsubsection{Encrypting documents}$/;"	b	language:Tex	subsection:PGP""GnuPG""Using Keys
@@ -42,6 +43,7 @@ Key integrity	privacy/pgp/chapter.tex	/^\\subsection{Key integrity}$/;"	u	langua
 Key listing	privacy/pgp/chapter.tex	/^\\subsection{Key listing}$/;"	u	language:Tex	section:PGP""GnuPG
 Keypair	privacy/pgp/chapter.tex	/^\\subsubsection{Keypair}$/;"	b	language:Tex	subsection:PGP""GnuPG""Introduction
 Linux	linux/part.tex	/^\\part{Linux}$/;"	p	language:Tex
+Linux	network/router/chapter.tex	/^\\subsection{Linux}$/;"	u	language:Tex	section:Router""Clients
 Makefile	Makefile	1;"	F	language:Make	epoch:1665391432
 Management	linux/systemd/chapter.tex	/^\\subsection{Management}$/;"	u	language:Tex	section:systemctl""timers
 Manual mounting and unmounting	privacy/luks/chapter.tex	/^\\subsubsection{Manual mounting and unmounting}$/;"	b	language:Tex	subsection:Data-at-rest encryption""dm-crypt""Encrypting a non-root file system
@@ -60,12 +62,13 @@ Publish to Keybase	privacy/pgp/chapter.tex	/^\\subsubsection{Publish to Keybase}
 Publish to PGP servers	privacy/pgp/chapter.tex	/^\\subsubsection{Publish to PGP servers}$/;"	b	language:Tex	subsection:PGP""GnuPG""key rotation
 Realtime timer	linux/systemd/chapter.tex	/^\\subsubsection{Realtime timer}$/;"	b	language:Tex	subsection:systemctl""timers""Example
 Regular expressions	linux/regex/chapter.tex	/^\\chapter{Regular expressions}$/;"	c	language:Tex
+Remove	network/router/chapter.tex	/^\\subsection{Remove}$/;"	u	language:Tex	section:Router""ip tables
 Renewing sub-keys	privacy/pgp/chapter.tex	/^\\subsubsection{Renewing sub-keys}$/;"	b	language:Tex	subsection:PGP""GnuPG""key renewing
 Revocation	privacy/pgp/chapter.tex	/^\\subsection{Revocation}$/;"	u	language:Tex	section:PGP""GnuPG
 Revoke old key pair	privacy/pgp/chapter.tex	/^\\subsubsection{Revoke old key pair}$/;"	b	language:Tex	subsection:PGP""GnuPG""key rotation
 Revoking a key	privacy/pgp/chapter.tex	/^\\subsubsection{Revoking a key}$/;"	b	language:Tex	subsection:PGP""GnuPG""Revocation
 Revoking a subkey	privacy/pgp/chapter.tex	/^\\subsubsection{Revoking a subkey}$/;"	b	language:Tex	subsection:PGP""GnuPG""Revocation
-Route to vpn	network/router/chapter.tex	/^\\subsection{Route to vpn}$/;"	u	language:Tex	section:Router""Define rule
+Route to vpn	network/router/chapter.tex	/^\\subsection{Route to vpn}$/;"	u	language:Tex	section:Router""ip tables
 Router	network/router/chapter.tex	/^\\chapter{Router}$/;"	c	language:Tex
 Search engine	privacy/dark/chapter.tex	/^\\section{Search engine}$/;"	s	language:Tex	chapter:Dark/Deep Web
 Search for files	linux/search/chapter.tex	/^\\chapter{Search for files}$/;"	c	language:Tex
@@ -90,7 +93,7 @@ chapter.tex	linux/regex/chapter.tex	1;"	F	language:Tex	epoch:1665746786
 chapter.tex	linux/search/chapter.tex	1;"	F	language:Tex	epoch:1665740170
 chapter.tex	linux/systemd/chapter.tex	1;"	F	language:Tex	epoch:1665659812
 chapter.tex	linux/text_utils/chapter.tex	1;"	F	language:Tex	epoch:1665759998
-chapter.tex	network/router/chapter.tex	1;"	F	language:Tex	epoch:1674358822
+chapter.tex	network/router/chapter.tex	1;"	F	language:Tex	epoch:1674703316
 chapter.tex	network/vpn/chapter.tex	1;"	F	language:Tex	epoch:1668073235
 chapter.tex	privacy/dark/chapter.tex	1;"	F	language:Tex	epoch:1665394675
 chapter.tex	privacy/luks/chapter.tex	1;"	F	language:Tex	epoch:1667129341
